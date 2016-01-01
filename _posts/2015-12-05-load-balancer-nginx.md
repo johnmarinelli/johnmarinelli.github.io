@@ -1,6 +1,6 @@
 ---
 title: Building A Load Balancer with nginx and Docker
-updated: 2015-10-01
+updated: 2015-12-05
 ---
 
 Load balancing is often one of those things we hear about in courses and don't really get any tangible experience with until or unless we work on a codebase that requires load balancing.
@@ -58,14 +58,26 @@ http {
   }
 }
 ```
-So we've added a couple of new things here: first is the `upstream roundrobin` block.  
-TODO: describe upstream
+So we've added a couple of new things here: first is the `upstream roundrobin` block.  `upstream` is an nginx directive that defines a group of servers.  Round robin is the default load balancing method, but we can use least connected, ip hash, generic hash, or weighted load balancing methods as well.  
+For example, let's say we wanted to determine the server used using an IP hash:
+
+```
+  upstream roundrobin {
+    ip_hash;
+
+    server localhost:8080;
+    server localhost:8081;
+    server localhost:8082;
+    server localhost:80;
+  }
+```
+Check out [the docs](http://nginx.org/en/docs/http/load_balancing.html#nginx_load_balancing_methods) if you'd like to read about the other methods.
+
 
 When a request for localhost:80/roundrobin/ is received, nginx will:
 - Proxy the request to the upstream roundrobin { } block
 - Forward the headers
 Then, the `upstream roundrobin` block will distribute requests in a round-robin fashion automatically.  
-Nginx has four different load balancing techniques for their open source version, which you can read about HERE.
 
 
 However, our work isn't quite done.  We still need to create server blocks for ports 8080, 8081, and 8082.  
@@ -93,6 +105,8 @@ server {
   root /data/server4;
 }
 ```
+
+Now, all we do is add an include statement and a wildcard to pull in the conf files we just wrote:
 
 
 ```
