@@ -9,8 +9,6 @@ Lately, I've been playiing with [Clojure](http://clojure.com).  I've always want
 
 I picked up [The Pragmatic Programmer's Programming Clojure](https://pragprog.com/book/shcloj2/programming-clojure) and learned a few basic concepts - defining forms, basic syntax, etc.  I am slowly starting to realize why everyone hails Lisp as ['the language from which God wrought the universe'](https://xkcd.com/224/).  
 
-Clojure is a Lisp dialect that runs on the JVM.  It encourages immutability and has strong support for concurrency.
-
 ## The Problem
 For my first Clojure project, I wanted to write a script that uses [the wikimedia API](https://www.mediawiki.org/wiki/API:Main_page) and stores all Wikipedia page titles and their ID in a database.  I'm also doing a little project on speeding up ActiveRecord queries, and a friend of mine approached me with a project that used millions of Wikipedia entries, so I figured I'd make my own database to tinker with.
 
@@ -43,6 +41,9 @@ However, when running this part of the script:
 ```
 
 I understood the core concept; if an object isn't going to be used later, don't bother wasting cycles creating said object.  Clojure is considered 'partially lazy' - unlike, for instance, Haskell, Clojure only implements lazy evaulation for the majority of its sequence operations, where Haskell covers the whole spectrum.
+
+
+> ### If an object isn't going to be used later, don't bother wasting cycles creating said object.
 
 The largest pro of lazy evaluation is the performance implications.  Suppose we have a function that randomly generates 10 widgets, and we create 1,000 "objects" that make use of this function.  With eager evaluation, this turns out to be 10,000 widgets, which could be expensive.  With lazy evaluation, those 10 widgets *won't be evaluated until inspection*.  For example, until I say `(filter #(+ %1 1) (get object :widgets))`, the `object`'s widgets *do not exist*.  Pretty sweet.  
 
